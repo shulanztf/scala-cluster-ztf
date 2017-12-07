@@ -23,6 +23,7 @@
 		<scala.compat.version>2.11</scala.compat.version>
 		<netty.version>4.1.6.Final</netty.version>
 		<netty.full.version>3.10.6.Final</netty.full.version>
+		<akka.version>2.4.12</akka.version>
 	</properties>
 
 	<dependencies>
@@ -70,7 +71,39 @@
 			<artifactId>netty-codec-http</artifactId> <version>${netty.version}</version> 
 			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-transport-native-epoll</artifactId> 
 			<version>${netty.version}</version> </dependency> -->
-
+		<!-- AKKA start -->
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_2.11</artifactId>
+			<version>${akka.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-slf4j_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-stream_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-remote_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-cluster_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<!-- AKKA end -->
 
 
 
