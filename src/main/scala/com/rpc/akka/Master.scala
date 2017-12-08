@@ -21,24 +21,31 @@ class Master extends Actor {
     import context.dispatcher
     val initialDelay: FiniteDuration = new FiniteDuration(0, TimeUnit.MILLISECONDS)
     val interval: FiniteDuration = new FiniteDuration(CHECK_INTERVAL, TimeUnit.MILLISECONDS)
-    //    启动定时器
-    context.system.scheduler.schedule(initialDelay, interval, this.self, CheckTimeOutWorker)
+    //    启动定时器，任务调度
+    context.system.scheduler.schedule(initialDelay, interval, self, CheckTimeOutWorker)
   }
 
   //  接收要处理的消息
   override def receive: Receive = {
     case CheckTimeOutWorker => {
-      println("master 信息校验", workers.toBuffer)
+      var current = System.currentTimeMillis()
+      val dead = workers.filter(p => current - p.lasterTime > CHECK_INTERVAL) //      过滤出超时worker
+      println("过滤出超时worker", dead.toBuffer)
+      dead.foreach(workerInfo => {
+        id2worker remove workerInfo.workerId
+        workers remove workerInfo
+      }) //      去除宕机的worker
     }
     case RegisterMsg(id, memory, cores) => {
       val workerInfo = new WorkerInfo(id, memory, cores)
       id2worker(id) = workerInfo
-      //      id2worker.put(id, workerInfo)
-      //      id2worker += ((id,workerInfo))
-      //      id2worker += (id -> workerInfo)
       workers += workerInfo
+      println("客户端注册", id)
     }
-
+    case HeartBeatMsg(workerId, content) => {
+      workers.filter(_.workerId equals workerId).foreach(_.lasterTime = System.currentTimeMillis())
+      println("客户端心跳更新", workerId)
+    }
   }
 }
 
