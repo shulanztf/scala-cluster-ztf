@@ -11,3 +11,7 @@ class RichHmUser(val t: HmUser) extends Ordered[HmUser] {
   }
 
 }
+
+object RichHmUser {
+
+}
