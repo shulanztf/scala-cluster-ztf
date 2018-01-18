@@ -11,7 +11,7 @@ class WordCountFir {
 }
 
 object WordCountFir {
-
+  
   def main(args: Array[String]) {
     println("aaa")
     if (args.length < 1) {

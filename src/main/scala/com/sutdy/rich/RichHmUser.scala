@@ -13,5 +13,7 @@ class RichHmUser(val t: HmUser) extends Ordered[HmUser] {
 }
 
 object RichHmUser {
-
+  def main(args: Array[String]): Unit = {
+    println("aaaaaaaaaaaa")
+  }
 }

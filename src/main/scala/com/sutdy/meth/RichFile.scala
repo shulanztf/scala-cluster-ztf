@@ -1,7 +1,7 @@
 package com.sutdy.meth
 
 import java.io.File
-import scalaz.effect.Resource
+//import scalaz.effect.Resource
 import scala.io.Source
 import ZtfPreDef._
 
