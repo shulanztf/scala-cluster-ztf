@@ -20,7 +20,7 @@ object SxtFileCountSpark {
      * 2017-01-01  HHCF  1323  青岛
      * 2017-01-01  HMLC  1125  北京
      */
-    var rdd1 = sc.textFile("hdfs://hserver131:9000/data/log.txt")
+    var rdd1 = sc.textFile("hdfs://hserver141:9000/data/log.txt")
     var rdd2 = rdd1.map((f) => { f.split("\t")(1) })
     /**
      * 计数为1,并转成二元组
@@ -62,7 +62,7 @@ object SxtFileCountSpark {
     //    输出到文件
     var rsltRdd = rdd6.filter((f: (Int, String)) => { true })
     //    避免FileAlreadyExistsException
-    rsltRdd.saveAsTextFile("hdfs://hserver131:9000/data/result/hhcf-" + System.currentTimeMillis)
+    rsltRdd.saveAsTextFile("hdfs://hserver141:9000/data/result/hhcf-" + System.currentTimeMillis)
     //
     sc.stop()
   }
