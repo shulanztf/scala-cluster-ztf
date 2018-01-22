@@ -28,11 +28,21 @@
 	</properties>
 
 	<dependencies>
+		<!-- scala-start -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 			<version>${scala.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-actors</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+		<!-- scala-end   -->
+
+
+
 
 		<!-- Test -->
 		<dependency>
@@ -150,6 +160,14 @@
 			<version>${spark.version}</version>
 		</dependency>
 		<!-- spark-end -->
+
+		<!-- kafka-start -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.11</artifactId>
+			<version>0.8.2.0</version>
+		</dependency>
+		<!-- kafka-end   -->
 
 
 	</dependencies>
