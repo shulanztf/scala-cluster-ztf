@@ -40,6 +40,12 @@
 			<version>${scala.version}</version>
 		</dependency>
 		<!-- scala-end   -->
+		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming-kafka -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming-kafka_2.11</artifactId>
+			<version>1.6.2</version>
+		</dependency>
 
 
 
