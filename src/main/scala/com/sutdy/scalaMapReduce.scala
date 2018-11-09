@@ -1,5 +1,12 @@
-import org.apache.hadoop.mapreduce.Mapper
+import java.io.IOException
+import java.lang
+
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.mapreduce.{Job, Mapper, Reducer}
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
 /**
   * https://blog.csdn.net/legotime/article/details/52832328?locationNum=10&fps=1 用scala来写mapreduce做数据去重
@@ -19,15 +26,19 @@ object scalaMapReduce {
     }
   }
   class myScalaReducer extends Reducer[Text, Text, Text, Text]{
-    override def reduce(key: Text, value: Iterable[Text], context: Reducer[Text, Text, Text, Text]#Context) {
-      try {
-        context.write(key, new Text(""))
-      }
-      catch {
-        case e: InterruptedException => e.printStackTrace()
-        case e: IOException => e.printStackTrace()
-      }
+    override def reduce(key: Text, values: lang.Iterable[Text], context: Reducer[Text, Text, Text, Text]#Context): Unit = {
+      context.write(key, new Text(""))
     }
+
+//    override def reduce(key: Text, value: Iterable[Text], context: Reducer[Text, Text, Text, Text]#Context) {
+//      try {
+//        context.write(key, new Text(""))
+//      }
+//      catch {
+//        case e: InterruptedException => e.printStackTrace()
+//        case e: IOException => e.printStackTrace()
+//      }
+//    }
   }
 
 
