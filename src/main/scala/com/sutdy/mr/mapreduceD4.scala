@@ -29,7 +29,7 @@ object mapreduceD4 {
     }).collect().foreach(x => println(x._1 + "\t" + x._2))
     //    fourth.filter((s:String)=>{s.trim().length>0}) filter全代码示例，返回boolean
     //    fourth.filter(_.trim.length>0).map((line:String)=>{(line,3)}) map全代码不便，返回二元组
-    sc.tra
+//    sc.tra
   }
 }
 
