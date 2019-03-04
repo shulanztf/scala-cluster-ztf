@@ -12,6 +12,16 @@ class mapreduceD1 {
 }
 
 
+object mapreduceD2{
+  def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setAppName("hhcf-sparkPai1").setMaster("local[3]")
+    val sc = new SparkContext(conf)
+    var l = sc.parallelize(1 to 10).map(x => x * x).count()
+    println("zzz", l)
+
+  }
+}
+
 object mapreduceD1 {
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("hhcf-sparkPai1").setMaster("local[3]")

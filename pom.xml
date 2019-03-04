@@ -182,7 +182,14 @@
 			<artifactId>spark-mllib_2.11</artifactId>
 			<version>${spark.version}</version>
 		</dependency>
-		<!-- spark-end -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-0-10_2.11</artifactId>
+            <version>${spark.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- spark-end -->
 
 		<!-- kafka-start -->
 		<dependency>
@@ -191,6 +198,13 @@
 			<version>0.8.2.0</version>
 		</dependency>
 		<!-- kafka-end   -->
+
+		<!-- https://mvnrepository.com/artifact/com.github.scopt/scopt -->
+		<dependency>
+			<groupId>com.github.scopt</groupId>
+			<artifactId>scopt_2.11</artifactId>
+			<version>3.7.1</version>
+		</dependency>
 
 
 	</dependencies>
