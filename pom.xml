@@ -26,6 +26,7 @@
 		<akka.version>2.4.12</akka.version>
 		<spark.version>2.1.2</spark.version>
 		<hadoop.version>2.6.0</hadoop.version>
+		<flink.version>1.8.2</flink.version>
 	</properties>
 
 	<dependencies>
@@ -48,10 +49,55 @@
 			<version>1.6.2</version>
 		</dependency>
 
+		<!-- flink-start -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-scala_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-streaming-scala_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<!-- flink-end -->
+
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-remote -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-remote_2.11</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.11</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-stream -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_2.11</artifactId>
+        </dependency>
+		<!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-slf4j -->
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-slf4j_2.11</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-testkit -->
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_2.11</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 
 
-		<!-- Test -->
+        <!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -71,23 +117,23 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty</artifactId> 
+		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty</artifactId>
 			<version>${netty.full.version}</version> </dependency> -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
 		</dependency>
-		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty-handler</artifactId> 
-			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId> 
-			<artifactId>netty-common</artifactId> <version>${netty.version}</version> 
-			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-buffer</artifactId> 
-			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId> 
-			<artifactId>netty-transport</artifactId> <version>${netty.version}</version> 
-			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-codec</artifactId> 
-			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId> 
-			<artifactId>netty-codec-http</artifactId> <version>${netty.version}</version> 
-			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-transport-native-epoll</artifactId> 
+		<!-- <dependency> <groupId>io.netty</groupId> <artifactId>netty-handler</artifactId>
+			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId>
+			<artifactId>netty-common</artifactId> <version>${netty.version}</version>
+			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-buffer</artifactId>
+			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId> <version>${netty.version}</version>
+			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-codec</artifactId>
+			<version>${netty.version}</version> </dependency> <dependency> <groupId>io.netty</groupId>
+			<artifactId>netty-codec-http</artifactId> <version>${netty.version}</version>
+			</dependency> <dependency> <groupId>io.netty</groupId> <artifactId>netty-transport-native-epoll</artifactId>
 			<version>${netty.version}</version> </dependency> -->
 		<!-- AKKA start -->
 		<dependency>
@@ -182,14 +228,14 @@
 			<artifactId>spark-mllib_2.11</artifactId>
 			<version>${spark.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql-kafka-0-10_2.11</artifactId>
-            <version>${spark.version}</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql-kafka-0-10_2.11</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <!-- spark-end -->
+		<!-- spark-end -->
 
 		<!-- kafka-start -->
 		<dependency>
@@ -206,8 +252,8 @@
 			<version>3.7.1</version>
 		</dependency>
 
-
 	</dependencies>
+
 
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
@@ -262,4 +308,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+
 </project>
