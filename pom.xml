@@ -65,6 +65,11 @@
 			<artifactId>flink-streaming-scala_2.11</artifactId>
 			<version>${flink.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
 
 		<!-- flink-end -->
 
@@ -245,11 +250,13 @@
 		</dependency>
 		<!-- kafka-end   -->
 
+
+
 		<!-- https://mvnrepository.com/artifact/com.github.scopt/scopt -->
 		<dependency>
 			<groupId>com.github.scopt</groupId>
 			<artifactId>scopt_2.11</artifactId>
-			<version>3.7.1</version>
+			<version>3.7.0</version>
 		</dependency>
 
 	</dependencies>
