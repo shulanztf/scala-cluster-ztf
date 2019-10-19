@@ -12,7 +12,7 @@ class BatchWCScalaApp {
 object BatchWCScalaApp {
 
   def main(args: Array[String]): Unit = {
-    val input = "file:///data/flink/tmp/input"
+    val input = "file:///data/flink/text-group-1"
     val env = ExecutionEnvironment.getExecutionEnvironment
     val text = env.readTextFile(input)
 

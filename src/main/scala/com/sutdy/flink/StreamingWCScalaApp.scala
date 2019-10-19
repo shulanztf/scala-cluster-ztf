@@ -16,12 +16,12 @@ object StreamingWCScalaApp {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     import org.apache.flink.api.scala._
-    val text = env.socketTextStream("", 9999)
+    val text = env.socketTextStream("localhost", 9999)
     text.flatMap(_.split(",")).map((_, 1))
       .keyBy(0)
           .timeWindow(Time.seconds(2)).sum(1).print().setParallelism(1)
 
-    env.execute("StreamingWCScalaApp")
+    env.execute("StreamingWCScalaApp12")
   }
 
 }
