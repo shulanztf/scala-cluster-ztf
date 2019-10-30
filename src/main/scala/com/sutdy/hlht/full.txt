@@ -1,0 +1,45 @@
+
+
+
+// kafka命令
+.\bin\windows\kafka-server-start.bat .\config\server.properties														windows+kafka,启动命令，docs窗口
+.\bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic hmlc-order-1							windows+kafka,启动生产端
+.\bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic tomcat-to-kafka-1							windows+kafka,启动生产端
+.\bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic hmlc-tomcat-to-kafka-1							windows+kafka,启动生产端
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic hmlc-order-1 --from-beginning	windows+kafka,启动客户端，新版命令，不再从zk读消息
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic kafka-to-elk-1 --from-beginning	windows+kafka,启动客户端，新版命令，不再从zk读消息
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic hmlc-kafka-to-elk-1 --from-beginning	windows+kafka,启动客户端，新版命令，不再从zk读消息
+.\bin\windows\kafka-topics.bat --list --zookeeper localhost:2181													windows+kafka,显示某节点topic
+
+
+
+// tomcat日志
+[root@HLHT_SERVICE02 log]# grep -n "UOCLOGPRINT" ./authserver.log | tail -20
+3253207:2019-10-28 14:04:14,079 INFO [qtp1382756158-105232] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappserver GET https://account-api.haier.net/v2/get-qrcode 20191028140414 success
+3253210:2019-10-28 14:04:14,280 INFO [qtp1382756158-105256] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] linkcook POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140414 success
+3253212:2019-10-28 14:04:14,391 INFO [qtp1382756158-97724] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] linkcook POST /oauth/token/client_credentials 20191028140414 success
+3253217:2019-10-28 14:04:14,434 INFO [qtp1382756158-39784] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] haokongqi POST /oauth/token/client_credentials 20191028140414 success
+3253223:2019-10-28 14:04:14,548 INFO [qtp1382756158-105159] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappserver POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140414 success
+3253225:2019-10-28 14:04:14,689 INFO [qtp1382756158-105154] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] haiercrash POST /oauth/token/client_credentials 20191028140414 success
+3253231:2019-10-28 14:04:14,733 INFO [qtp1382756158-105151] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappserver POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140414 success
+3253233:2019-10-28 14:04:14,785 INFO [qtp1382756158-97717] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] aftersale POST /oauth/token/client_credentials 20191028140414 success
+3253239:2019-10-28 14:04:14,964 INFO [qtp1382756158-105239] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappadrd GET https://account-api.haier.net/v2/haier/userinfo 20191028140414 success
+3253242:2019-10-28 14:04:15,026 INFO [qtp1382756158-39851] LogPrintFormatAspect [LogPrintFormatAspect.java:62] - [UOCLOGPRINT] aftersale POST https://account.haier.com/v2/sms-verification-graph/send 20191028140415 error captcha_answer_error
+3253244:2019-10-28 14:04:15,144 INFO [qtp1382756158-97685] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] uplusappadrd POST /oauth/token/password 20191028140415 success
+3253249:2019-10-28 14:04:15,155 INFO [qtp1382756158-105164] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] linkcook POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140415 success
+3253255:2019-10-28 14:04:15,296 INFO [qtp1382756158-105190] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappadrd GET https://account-api.haier.net/v2/haier/userinfo 20191028140415 success
+3253257:2019-10-28 14:04:15,473 INFO [qtp1382756158-105173] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] kongtiaoping POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140415 success
+3253259:2019-10-28 14:04:15,511 INFO [qtp1382756158-105242] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappadrd GET https://account-api.haier.net/v2/haier/userinfo 20191028140415 success
+3253261:2019-10-28 14:04:15,534 INFO [qtp1382756158-97818] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] haiercrash POST /oauth/token/client_credentials 20191028140415 success
+3253267:2019-10-28 14:04:15,652 INFO [qtp1382756158-105200] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappserver POST https://account-api.haier.net/v2/qr-login/uhome/poll 20191028140415 success
+3253269:2019-10-28 14:04:15,690 INFO [qtp1382756158-105158] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappadrd GET https://account-api.haier.net/v2/haier/userinfo 20191028140415 success
+3253271:2019-10-28 14:04:15,843 INFO [qtp1382756158-105177] UHomeCompositeTokenGranter [UHomeCompositeTokenGranter.java:59] - [UOCLOGPRINT] aftersale POST /oauth/token/client_credentials 20191028140415 success
+3253276:2019-10-28 14:04:15,851 INFO [qtp1382756158-105222] LogPrintFormatAspect [LogPrintFormatAspect.java:59] - [UOCLOGPRINT] uplusappadrd GET https://account-api.haier.net/v2/haier/userinfo 20191028140415 success
+You have new mail in /var/spool/mail/root
+[root@HLHT_SERVICE02 log]#
+
+logstash启动命令
+./bin/logstash -f ./config/logstash-kafka-full-20191023.conf    
+./bin/logstash -f ./config/logstash-kafka-tomcat-20191020.conf   tomcat-kafka-elk
+
+
