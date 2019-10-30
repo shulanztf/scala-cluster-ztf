@@ -39,7 +39,12 @@ You have new mail in /var/spool/mail/root
 [root@HLHT_SERVICE02 log]#
 
 logstash启动命令
-./bin/logstash -f ./config/logstash-kafka-full-20191023.conf    
+./bin/logstash -f ./config/logstash-kafka-full-20191023.conf
 ./bin/logstash -f ./config/logstash-kafka-tomcat-20191020.conf   tomcat-kafka-elk
+
+
+生成flink可执行 jar包命令
+mvn clean package assembly:assembly -Dcheckstyle.skip=true      不可行
+
 
 
