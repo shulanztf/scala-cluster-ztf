@@ -46,5 +46,9 @@ logstash启动命令
 生成flink可执行 jar包命令
 mvn clean package assembly:assembly -Dcheckstyle.skip=true      不可行
 
+启动flink集群
 
+
+提交flink 任务
+D:\opt\flink\flink-1.7.2>.\bin\flink run  -c com.sutdy.hlht.ReadingFromKafkaTomcat3 .\scala-cluster-full.jar --port 9000    windows+flink，提交命令
 
