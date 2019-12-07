@@ -1,6 +1,7 @@
 package com.api.study.flink.sql
 
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.FileSystem
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.table.api.scala._
 import org.apache.flink.table.api.{Table, TableEnvironment}
@@ -44,6 +45,8 @@ object TestSql2 {
     val stream: DataStream[String] = rs.select("name") //过滤获取name这一列的数据
       .toAppendStream[String] // 将表转化成DataStream
 
+    stream.writeAsText("/data/flink/file",FileSystem.WriteMode.OVERWRITE)// 写到目标文件，OVERWRITE覆盖，生产慎用
+        .setParallelism(1)// 设置分区，避免多个文件
     stream.print()
     env.execute("TestSql2")
   }
