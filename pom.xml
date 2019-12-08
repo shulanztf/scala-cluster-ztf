@@ -13,6 +13,7 @@
     <modules>
         <module>scala-sample-flink</module>
         <module>scala-simple-spark</module>
+        <module>scala-simple-flink</module>
     </modules>
 
 </project>
