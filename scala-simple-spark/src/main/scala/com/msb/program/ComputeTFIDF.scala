@@ -2,6 +2,7 @@ package com.msb.program
 
 import com.msb.util.SegmentWordUtil
 import org.apache.spark.ml.feature.{CountVectorizer, IDF}
+import org.apache.spark.ml.linalg.SparseVector
 
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
@@ -24,7 +25,7 @@ object ComputeTFIDF {
       */
     session.sql("use program")
     //获取节目信息，然后对其进行分词
-    val articleDF = session.sql("select * from item_info limit 100")
+    val articleDF = session.sql("select * from item_info limit 20000")
 //    articleDF.show(2,false)// 数据显示，不折行
     //    val articleDF = session.table("item_info")
 
@@ -97,47 +98,47 @@ object ComputeTFIDF {
       .write
       .mode(SaveMode.Overwrite)
       .insertInto("keyword_idf")
-//
-//
-//    /**
-//      * idfModel 和 TF 计算TF-IDF
-//      *
-//      * TF
-//      * idf
-//      */
-//    val tfIdfResult = idfModel.transform(cv_result)
-//    tfIdfResult.show()
-//
-//    //根据TFIDF来排序
-//    val keyword2TFIDF = tfIdfResult.rdd.mapPartitions(partition => {
-//      val rest = new ListBuffer[(Long, Int, Double)]
-//      val topN = 10
-//
-//      while (partition.hasNext) {
-//        val row = partition.next()
-//        var idfVals: List[Double] = row.getAs[SparseVector]("features_tfidf").values.toList
-//        val tmpList = new ListBuffer[(Int, Double)]
-//
-//        for (i <- 0 until (idfVals.length))
-//          tmpList += ((i, idfVals(i)))
-//
-//
-//        val buffer = tmpList.sortBy(_._2).reverse
-//        for (item <- buffer.take(topN))
-//          rest += ((row.getAs[Long]("item_id"), item._1, item._2))
-//      }
-//      rest.iterator
-//    }).toDF("item_id", "index", "tfidf")
-//    keyword2TFIDF.show(10)
-//
-//
-//    keyword2TFIDF.createGlobalTempView("keywordsByTable")
-//    //获取索引对应的单词，组织格式 保存Hive表
-//    session.sql("select * from keyword_idf a join global_temp.keywordsByTable b on a.index = b.index")
+
+
+    /**
+      * idfModel 和 TF 计算TF-IDF
+      *
+      * TF
+      * idf
+      */
+    val tfIdfResult:DataFrame = idfModel.transform(cv_result)
+//    tfIdfResult.show(5,false)// 数据显示，不折行
+
+    //根据TFIDF来排序
+    val keyword2TFIDF = tfIdfResult.rdd.mapPartitions(partition => {
+      val rest = new ListBuffer[(Long, Int, Double)]
+      val topN = 10
+
+      while (partition.hasNext) {
+        val row = partition.next()
+        var idfVals: List[Double] = row.getAs[SparseVector]("features_tfidf").values.toList
+        val tmpList = new ListBuffer[(Int, Double)]
+
+        for (i <- 0 until (idfVals.length))
+          tmpList += ((i, idfVals(i)))
+
+
+        val buffer = tmpList.sortBy(_._2).reverse
+        for (item <- buffer.take(topN))
+          rest += ((row.getAs[Long]("item_id"), item._1, item._2))
+      }
+      rest.iterator
+    }).toDF("item_id", "index", "tfidf")
+//    keyword2TFIDF.show(5,false)// 数据显示，不折行
+
+    keyword2TFIDF.createGlobalTempView("keywordsByTable")
+    //获取索引对应的单词，组织格式 保存Hive表
+    session.sql("select * from keyword_idf a join global_temp.keywordsByTable b on a.index = b.index")
 //      .select("item_id", "word", "tfidf")
-//      .write
-//      .mode(SaveMode.Overwrite)
-//      .insertInto("keyword_tfidf")
+      .select($"item_id", $"keywords" as "word", $"tfidf")
+      .write
+      .mode(SaveMode.Overwrite)
+      .insertInto("keyword_tfidf")
     session.close()
   }
 }
