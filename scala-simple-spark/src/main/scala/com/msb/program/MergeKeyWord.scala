@@ -32,11 +32,11 @@ object MergeKeyWord {
       val itemID = row.getAs[Long]("item_id")
       val keyword1 = row.getAs[Seq[String]]("keyword1")
       val keyword2 = row.getAs[Seq[String]]("keyword2")
-      val keywords = keyword1.union(keyword2).distinct.toArray
+      val keywords:Array[String] = keyword1.union(keyword2).distinct.toArray
       (itemID, keywords)
     }).toDF("item_id", "keyword")
       .write
       .mode(SaveMode.Overwrite)
-      .insertInto("item_keyword")
+      .insertInto("item_keyword")// TODO,hive item_keyword.keyword 字段类型调整，字符串转seq
   }
 }
