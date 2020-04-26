@@ -17,9 +17,11 @@ object ItemProfile {
       "FROM tmp_program.item_keyword a " +
       "JOIN program.item_info b ON a.item_id = b.id ";
     val restDF = session.sql(sqlText)
+    restDF.show(5, false)//数据显示，不折行
+
     restDF
       .write
-      .mode(SaveMode.Overwrite)
+      .mode(SaveMode.Overwrite) //覆盖写
       .saveAsTable("item_profile")
 
     session.close()

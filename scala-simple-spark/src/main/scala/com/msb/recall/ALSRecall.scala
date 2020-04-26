@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.ml.recommendation.{ALS, ALSModel}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, explode}
 
 import scala.collection.mutable.ListBuffer
@@ -71,7 +72,7 @@ object ALSRecall {
       val fictIndex = data._2.toInt
       item(fictIndex, itemID, score)
     }).toDF()
-    trainDF.show(5,false) //数据显示，不折行
+//    trainDF.show(5,false) //数据显示，不折行
 
     //    trainDF     userID itemID score
 
@@ -84,12 +85,10 @@ object ALSRecall {
       .setRatingCol("score")
 
     val model:ALSModel = als.fit(trainDF)
-    trainDF.show(10)
 
-    val recommendForAllUsers = model
+    val recommendForAllUsers:DataFrame = model
       .recommendForAllUsers(10)
-
-    recommendForAllUsers.show(10)
+//    recommendForAllUsers.show(5,false)//数据显示，不折行
 
     recommendForAllUsers.withColumn("itemID", explode(col("recommendations")))
       .drop(col("recommendations"))
@@ -102,12 +101,13 @@ object ALSRecall {
       (userID, itemID)
     }).groupByKey()
       .foreachPartition(partition => {
+//        TODO,写hbase异常：远程主机强迫关闭了一个现有的连接。
         val tableName = PropertiesUtils.getProp("user.recall.hbase.table")
         val hisTableName = PropertiesUtils.getProp("user.history.recall.hbase.table")
         val conf = HBaseUtil.getHBaseConfiguration()
         val conn = ConnectionFactory.createConnection(conf)
-        val htable = HBaseUtil.getTable(conf, tableName)
-        val histable = HBaseUtil.getTable(conf, hisTableName)
+        val htable = HBaseUtil.getTable(conf, tableName)//hbase recall表
+        val histable = HBaseUtil.getTable(conf, hisTableName)//hbase history_recall表
         for (elem <- partition) {
           /**
            * 在推荐过程中，如果已经推荐过的商品，就不能再推荐,会从召回表中删除

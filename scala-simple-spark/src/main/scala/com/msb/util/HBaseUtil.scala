@@ -29,7 +29,7 @@ object HBaseUtil {
     conf
   }
 
-  def getConn(tableName: String) = {
+  def getConn(tableName: String):Connection = {
     val conf = HBaseUtil.getHBaseConfiguration()
     conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
     ConnectionFactory.createConnection(conf)
