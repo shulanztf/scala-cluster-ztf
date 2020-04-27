@@ -82,65 +82,61 @@ object ComputeSimilar {
       val sortIndex = indexs.toArray.sorted
       val vector = new SparseVector(word2Index.size, sortIndex, values.toArray)
       println("vector.size:" + vector.size)
-
       (itemID, vector.toDense)
     }
     ).toDF("item_id", "features")
-    featuresDF.show(5, false)//数据显示，不折行
-//
-//    //将每个节目所对应的向量存储到Hive中
-//    featuresDF.write.mode(SaveMode.Overwrite).saveAsTable("tmp_keyword_weight")
-//
-//    featuresDF.rdd
-//      .foreachPartition(partition => {
-//        val conf = HBaseUtil.getHBaseConfiguration()
-//        val htable = HBaseUtil.getTable(conf, "keyword_weight")
-//        for (row <- partition) {
-//          val itemID = row.getAs[Int]("item_id")
-//          val features = row.getAs[DenseVector]("features")
-//          val put = new Put(Bytes.toBytes(itemID + ""))
-//          println("features.size:" + features.size)
-//          put.addColumn(Bytes.toBytes("features"), Bytes.toBytes("features"), Bytes.add(Bytes.toByteArrays(features.toDense.toArray.map(x => x + "\t"))))
-//          htable.put(put)
-//        }
-//      })
-//
-//    val rddArr = featuresDF.randomSplit(Array(0.7, 0.3))
-//    val train = rddArr(0)
+//    featuresDF.show(5, false)//数据显示，不折行
+
+    //将每个节目所对应的向量存储到Hive中
+    featuresDF.write.mode(SaveMode.Overwrite).saveAsTable("tmp_keyword_weight")//覆盖写
+    featuresDF.rdd
+      .foreachPartition(partition => {
+        val conf = HBaseUtil.getHBaseConfiguration()
+        val htable = HBaseUtil.getTable(conf, "keyword_weight")
+        for (row <- partition) {
+          val itemID = row.getAs[Int]("item_id")
+          val features = row.getAs[DenseVector]("features")
+          val put = new Put(Bytes.toBytes(itemID + ""))
+          println("features.size:" + features.size)
+          put.addColumn(Bytes.toBytes("features"), Bytes.toBytes("features"), Bytes.add(Bytes.toByteArrays(features.toDense.toArray.map(x => x + "\t"))))
+          htable.put(put)
+        }
+      })
+
+    val rddArr = featuresDF.randomSplit(Array(0.7, 0.3))
+    val train = rddArr(0)
 //    val test = rddArr(1)
-//
-//    val brpls = new BucketedRandomProjectionLSH()
-//    brpls.setInputCol("features")
-//    brpls.setOutputCol("hashes")
-//    //桶个数
-//    brpls.setBucketLength(10.0)
-//    val model = brpls.fit(train)
-//
-//    val similar = model.approxSimilarityJoin(featuresDF, featuresDF, 2.0, "EuclideanDistance")
-//
+
+    val brpls = new BucketedRandomProjectionLSH()
+    brpls.setInputCol("features")
+    brpls.setOutputCol("hashes")
+    //桶个数
+    brpls.setBucketLength(10.0)
+    val model = brpls.fit(train)
+    val similar = model.approxSimilarityJoin(featuresDF, featuresDF, 2.0, "EuclideanDistance")
 //    similar.show(10, false)
-//    //    create 'program_similar',{NAME => 'similar', VERSIONS => 9999}
-//
-//    val tableName = PropertiesUtils.getProp("similar.hbase.table")
-//    similar.toDF()
-//      .rdd
-//      .foreachPartition(partition => {
-//        val conf = HBaseUtil.getHBaseConfiguration()
-//        //        conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
-//        val htable = HBaseUtil.getTable(conf, tableName)
-//        for (row <- partition) {
-//          if (row.getAs[Double]("EuclideanDistance") < 1) {
-//            val aItemID = row.getAs[Row]("datasetA").getAs[Int](0)
-//            val bItemID = row.getAs[Row]("datasetB").getAs[Int](0)
-//            val dist = row.getAs[Double]("EuclideanDistance")
-//            if (aItemID != bItemID) {
-//              val put = new Put(Bytes.toBytes(aItemID + ""))
-//              put.addColumn(Bytes.toBytes("similar"), Bytes.toBytes(bItemID + ""), Bytes.toBytes(dist + ""))
-//              htable.put(put)
-//            }
-//          }
-//        }
-//      })
+    //    create 'program_similar',{NAME => 'similar', VERSIONS => 9999}
+
+    val tableName = PropertiesUtils.getProp("similar.hbase.table")//hbase program_similar表
+    similar.toDF()
+      .rdd
+      .foreachPartition(partition => {
+        val conf = HBaseUtil.getHBaseConfiguration()
+        //        conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
+        val htable = HBaseUtil.getTable(conf, tableName)
+        for (row <- partition) {
+          if (row.getAs[Double]("EuclideanDistance") < 1) {
+            val aItemID = row.getAs[Row]("datasetA").getAs[Int](0)
+            val bItemID = row.getAs[Row]("datasetB").getAs[Int](0)
+            val dist = row.getAs[Double]("EuclideanDistance")
+            if (aItemID != bItemID) {
+              val put = new Put(Bytes.toBytes(aItemID + ""))
+              put.addColumn(Bytes.toBytes("similar"), Bytes.toBytes(bItemID + ""), Bytes.toBytes(dist + ""))
+              htable.put(put)
+            }
+          }
+        }
+      })
 
     session.close()
   }

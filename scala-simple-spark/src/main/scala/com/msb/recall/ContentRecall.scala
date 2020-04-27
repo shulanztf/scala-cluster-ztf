@@ -42,14 +42,14 @@ object ContentRecall {
        */
     }).distinct()
 
-    val table = PropertiesUtils.getProp("similar.hbase.table")
+    val table = PropertiesUtils.getProp("similar.hbase.table")//hbase program_similar表
     val conf = HBaseUtil.getConf(table)
 
-    var hbaseRdd: RDD[(ImmutableBytesWritable, Result)] = session.sparkContext.newAPIHadoopRDD(conf, classOf[TableInputFormat],
+    val hbaseRdd: RDD[(ImmutableBytesWritable, Result)] = session.sparkContext.newAPIHadoopRDD(conf, classOf[TableInputFormat],
       classOf[ImmutableBytesWritable],
       classOf[Result])
 
-    var similarPro = hbaseRdd.flatMap(data => {
+    val similarPro = hbaseRdd.flatMap(data => {
       val list = new ListBuffer[(Int, Int)]()
       val result = data._2
       for (rowKv <- result.rawCells()) {
@@ -69,8 +69,8 @@ object ContentRecall {
     itemID2userID.join(similarPro).map(x => {
       (x._2._1, x._2._2)
     }).groupByKey().foreachPartition(partition => {
-      val tableName = PropertiesUtils.getProp("user.recall.hbase.table")
-      val hisTableName = PropertiesUtils.getProp("user.history.recall.hbase.table")
+      val tableName = PropertiesUtils.getProp("user.recall.hbase.table")//hbase recall表
+      val hisTableName = PropertiesUtils.getProp("user.history.recall.hbase.table")//hbase history_recall表
       val conf = HBaseUtil.getHBaseConfiguration()
       //            conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
       val conn = ConnectionFactory.createConnection(conf)
@@ -98,6 +98,8 @@ object ContentRecall {
       htable.close()
       histable.close()
     })
-    df.show()
+    df.show(5,false)//数据显示，不折行
+
+    session.close()
   }
 }
