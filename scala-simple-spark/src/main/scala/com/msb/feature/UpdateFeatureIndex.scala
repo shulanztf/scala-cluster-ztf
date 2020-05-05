@@ -10,7 +10,7 @@ import org.apache.spark.rdd.RDD
 import scala.collection.mutable.ListBuffer
 
 /**
- *
+ * 特征索引
  */
 object UpdateFeatureIndex {
   def main(args: Array[String]): Unit = {
