@@ -22,7 +22,7 @@ object FeaturesFactory {
   }
 
   //构建特征工程
-  def getLRFeatures:DataFrame = {
+  def getLRFeatures: DataFrame = {
     /**
      * 构建训练集-特征工程
      */
@@ -40,17 +40,17 @@ object FeaturesFactory {
 
     //cache 并不会将所有的数据全部放入到内存   怎么知道是否全部缓存到内存了？
     /**
-     *  memory_only
-     *  memory_only_ser
-     *  memory_and_disk
+     * memory_only
+     * memory_only_ser
+     * memory_and_disk
      *
-     *  disk_2
+     * disk_2
      *
-     *  val rdd = ....
-     *  val rdd1 = rdd.cache()
-     *  val rdd2 = rdd1.map
-     *  rdd3.count()
-     *  rdd1.map().map().count()
+     * val rdd = ....
+     * val rdd1 = rdd.cache()
+     * val rdd2 = rdd1.map
+     * rdd3.count()
+     * rdd1.map().map().count()
      */
     hbaseRdd = hbaseRdd.cache()
     import session.implicits._
@@ -61,8 +61,8 @@ object FeaturesFactory {
       val list = new ListBuffer[String]
       val result = data._2
       for (rowKv <- result.rawCells()) {
-//        val rowkey = new String(rowKv.getRowArray, rowKv.getRowOffset, rowKv.getRowLength, "UTF-8")
-//        val colName = new String(rowKv.getQualifierArray, rowKv.getQualifierOffset, rowKv.getQualifierLength, "UTF-8")
+        //        val rowkey = new String(rowKv.getRowArray, rowKv.getRowOffset, rowKv.getRowLength, "UTF-8")
+        //        val colName = new String(rowKv.getQualifierArray, rowKv.getQualifierOffset, rowKv.getQualifierLength, "UTF-8")
         val value = new String(rowKv.getValueArray, rowKv.getValueOffset, rowKv.getValueLength, "UTF-8")
         if (value.contains("keyWord")) {
           val elems = value.split("\t")
@@ -81,7 +81,7 @@ object FeaturesFactory {
       list.iterator
     }).distinct()
       //zipWithUniqueID  不连续 唯一
-      .zipWithIndex()     //连续 唯一   （  ）
+      .zipWithIndex() //连续 唯一   （  ）
       .collectAsMap()
 
     val distinctWordsBroad = session.sparkContext.broadcast(distinctWords)
@@ -166,7 +166,7 @@ object FeaturesFactory {
       "from program.user_action a join " +
       "tmp_program.tmp_keyword_weight b " +
       "on (a.item_id = b.item_id) ")
-    itemFeatureDF.show(5,false)//数据显示，不折行
+    itemFeatureDF.show(5, false) //数据显示，不折行
 
     /**
      * root
@@ -214,17 +214,17 @@ object FeaturesFactory {
         } else {
           1
         }
-        println("provinceVector.size:" + provinceVector.size + "\tcityVector.size:" + cityVector.size + "\tfeatures.size:" + features.size + "\tuserLabelVector.size:" +userLabelVector.size )
+        println("provinceVector.size:" + provinceVector.size + "\tcityVector.size:" + cityVector.size + "\tfeatures.size:" + features.size + "\tuserLabelVector.size:" + userLabelVector.size)
         (userID, itemID, duration, features, provinceVector, cityVector, userLabelVector, label)
       }).toDF("userID", "itemID", "duration", "program_features", "province_Vector", "city_Vector", "userLabel_Vector", "label")
 
-    featuresDF.show(5,false)//数据显示，不折行
+    featuresDF.show(5, false) //数据显示，不折行
 
     val assem = new VectorAssembler()
-    val trainDF:DataFrame = assem
-        .setInputCols(Array("program_features", "province_Vector", "city_Vector", "userLabel_Vector"))
-        .setOutputCol("features")
-        .transform(featuresDF)
+    val trainDF: DataFrame = assem
+      .setInputCols(Array("program_features", "province_Vector", "city_Vector", "userLabel_Vector"))
+      .setOutputCol("features")
+      .transform(featuresDF)
 
     //    trainDF.write.saveAsTable("tmp_program.feature")
     trainDF
