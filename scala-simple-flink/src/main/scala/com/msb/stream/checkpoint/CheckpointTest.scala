@@ -37,7 +37,7 @@ object CheckpointTest {
     // DELETE_ON_CANCELLATION 当任务取消，checkpoints数据会删除
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
 
-    val stream = env.socketTextStream("node01", 8888)
+    val stream = env.socketTextStream("hserver134", 8888)
 
     stream.flatMap(_.split(" "))
       .map((_, 1)).uid("reduce")
