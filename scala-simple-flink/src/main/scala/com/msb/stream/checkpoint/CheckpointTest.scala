@@ -39,17 +39,25 @@ object CheckpointTest {
 
     val stream = env.socketTextStream("hserver134", 8888)
 
-    stream.flatMap(_.split(" "))
-      .map((_, 1)).uid("reduce")
-      .filter(_.equals("hello"))
-      .keyBy(x => x._1)
-      .reduce((v1: (String, Int), v2: (String, Int)) => {
-        (v1._1, v1._2 + v2._2)
-      }).uid("reduce")
-      .map(x=>{
-        println(x + ":savepoint" )
-      })
-      .print()
+//    stream.flatMap(_.split(" "))
+//      .map((_, 1)).uid("reduce1")
+//      .filter(_._1.equals("hello"))
+//      .keyBy(x => x._1)
+//      .reduce((v1: (String, Int), v2: (String, Int)) => {
+//        (v1._1, v1._2 + v2._2)
+//      }).uid("reduce2")
+//      .map(x=>{
+//        println(x + ":savepoint" )
+//        x
+//      })
+//      .print()
+    val ds1:DataStream[(String,Int)] = stream.flatMap(_.split(" "))
+        .map((_,1))
+        .keyBy(x => x._1)
+        .reduce((v1:(String,Int),v2:(String,Int)) => {
+          (v1._1,v1._2+v2._2)
+        })
+    ds1.print()
 
     env.execute()
   }
