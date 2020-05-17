@@ -2,6 +2,7 @@ package com.msb.program
 
 import com.msb.algorithm.TextRank
 import com.msb.util.{SegmentWordUtil, SparkSessionBase}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
 
 import scala.collection.mutable
@@ -20,15 +21,16 @@ object ComputeTextRank {
     //    val articleDF = session.sql("select * from item_info limit 20")
     val articleDF = session.table("item_info").limit(1000)
     val seg = new SegmentWordUtil()
-    //[itemID,[w1,w2,w3......]]
-    val wordsRDD = articleDF.rdd.mapPartitions(seg.segeFun)
+    //[itemID,[w1,w2,w3......]],节目id,描述、标题、名字的拼接串
+    val wordsRDD: RDD[(Long, List[String])] = articleDF.rdd.mapPartitions(seg.segeFun)
 
     //计算每个节目 每个单词的TR值
     val tralgm = new TextRank()
-    //transform构建图
-    val transformGraphRDD = wordsRDD.map(x => (x._1, tralgm.transform(x._2)))
-    //[itemid,map[word,tr]]
-    val rankRDD = transformGraphRDD.map(x => (x._1, tralgm.rank(x._2)))
+    //transform构建图,节目id,textRank需要的数据(KV(V为链表)对)
+    val transformGraphRDD: RDD[(Long, mutable.HashMap[String, mutable.HashSet[String]])]
+    = wordsRDD.map(x => (x._1, tralgm.transform(x._2)))
+    // 节目id,节目下所有单词的textRank值(KV对)
+    val rankRDD:RDD[(Long,mutable.HashMap[String, Double])] = transformGraphRDD.map(x => (x._1, tralgm.rank(x._2)))
     //    rankRDD.foreach(println)
 
     /**
