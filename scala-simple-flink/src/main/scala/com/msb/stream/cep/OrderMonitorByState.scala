@@ -1,5 +1,6 @@
 package com.msb.stream.cep
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -26,10 +27,12 @@ object OrderMonitorByState {
     //创建一个侧输出流的Tag
     val tag = new OutputTag[OrderMessage]("pay_timeout")
 
-    val stream: DataStream[OrderInfo] = env.readTextFile(getClass.getResource("/OrderLog.csv").getPath)
+//    val stream: DataStream[OrderInfo] = env.readTextFile(getClass.getResource("D:\\data\\flink\\flink-data\\OrderLog.csv").getPath)
+    val stream: DataStream[OrderInfo] = env.readTextFile("D:\\data\\flink\\flink-data\\OrderLog.csv")
+      .filter(StringUtils.isNotBlank(_))
       .map(line => {
         val arr: Array[String] = line.split(",")
-        new OrderInfo(arr(0), arr(1), arr(2), arr(3).toLong)
+        OrderInfo(arr(0), arr(1), arr(2), arr(3).toLong)
       }).assignAscendingTimestamps(_.actionTime * 1000L)
 
     val mainStream: DataStream[OrderMessage] = stream.keyBy(_.oid)
