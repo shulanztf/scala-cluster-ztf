@@ -1,5 +1,6 @@
 package com.msb.stream.cep
 
+import com.msb.util.{OrderInfo, OrderMessage}
 import org.apache.commons.lang3.StringUtils
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.configuration.Configuration
@@ -100,11 +101,5 @@ object OrderMonitorByState {
 
 }
 
-case class OrderInfo(oid: String, status: String, payId: String, actionTime: Long)
-
-/**
- * 提示信息的样例类
- */
-case class OrderMessage(oid: String, msg: String, createTime: Long, payTime: Long)
 
 

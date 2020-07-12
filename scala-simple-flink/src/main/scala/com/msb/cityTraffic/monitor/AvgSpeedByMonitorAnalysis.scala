@@ -1,15 +1,15 @@
 package com.msb.cityTraffic.monitor
 
 
-import com.msb.util.{AvgSpeedInfo, TrafficInfo, WriteDataSink}
+import com.msb.util.{AvgSpeedInfo, OperatorMysql, Ssinks, TrafficInfo, WriteDataSink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
-//import org.apache.flink.table.functions.AggregateFunction
 import org.apache.flink.api.common.functions.AggregateFunction
+import org.apache.flink.api.java.io.jdbc.JDBCOutputFormat
 
 /**
  * @description: 卡口车辆拥堵监控.
@@ -30,11 +30,12 @@ object AvgSpeedByMonitorAnalysis {
         val arr = line.split(",")
         TrafficInfo(arr(0).toLong, arr(1), arr(2), arr(3), arr(4).toDouble, arr(5), arr(6))
       }).assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor[TrafficInfo](Time.seconds(5)) { //引入Watermark，并且延迟时间为5秒
-      override def extractTimestamp(element: TrafficInfo): Long = element.actionTime
+      override def extractTimestamp(element: TrafficInfo): Long = element.actionTime//指定事件时间字段
     })
 
-    stream.keyBy(_.monitorId)
-      .timeWindow(Time.minutes(5), Time.minutes(1))
+   val result:DataStream[AvgSpeedInfo] = stream.keyBy(_.monitorId)
+      .timeWindow(Time.seconds(5), Time.seconds(1))//窗口长5秒钟，滑动1秒钟
+//      .timeWindow(Time.minutes(5), Time.minutes(1))//窗口长5分钟，滑动1分钟
       .aggregate( //设计一个累加器：二元组(车速之后，车辆的数量)
         new AggregateFunction[TrafficInfo, (Double, Long), (Double, Long)] {
           override def createAccumulator(): (Double, Long) = (0, 0)
@@ -54,7 +55,9 @@ object AvgSpeedByMonitorAnalysis {
           val avg = (acc._1 / acc._2).formatted("%.2f").toDouble
           out.collect(AvgSpeedInfo(w.getStart, w.getEnd, key, avg, acc._2.toInt))
         }
-      ).addSink(new WriteDataSink[AvgSpeedInfo](classOf[AvgSpeedInfo]))
+      )
+    result.addSink(new WriteDataSink[AvgSpeedInfo](classOf[AvgSpeedInfo]))
+
     streamEnv.execute()
   }
 }

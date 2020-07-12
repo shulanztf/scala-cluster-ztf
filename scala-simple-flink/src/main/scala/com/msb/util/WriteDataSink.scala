@@ -17,7 +17,8 @@ class WriteDataSink[T](classType: Class[_ <: T]) extends RichSinkFunction[T] {
   var pst: PreparedStatement = _
 
   override def open(parameters: Configuration): Unit = {
-    conn = DriverManager.getConnection("jdbc:mysql://localhost/traffic_monitor", "root", "123123")
+    Class.forName("com.mysql.jdbc.Driver")
+    conn = DriverManager.getConnection("jdbc:mysql://192.168.1.133:3306/hlhtpoint?useUnicode=true&characterEncoding=utf-8&useSSL=false", "root", "123456")
     if (classType.getName.equals(classOf[OutOfLimitSpeedInfo].getName)) {
       pst = conn.prepareStatement("insert into t_speeding_info (car,monitor_id,road_id,real_speed,limit_speed,action_time) values (?,?,?,?,?,?)")
     }
