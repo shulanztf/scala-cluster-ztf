@@ -76,6 +76,34 @@ case class OrderMessage(oid: String, msg: String, createTime: Long, payTime: Lon
 case class MonitorInfo(monitorId: String, roadId: String, limitSpeed: Int, areaId: String)
 
 /**
+ * 危险驾驶的信息
+ * @param car  车牌号
+ * @param msg  提示信息
+ * @param createTime  时间
+ * @param avgSpeed  平均车速
+ */
+case class DangerousDrivingWarning(car:String,msg:String,createTime:Long,avgSpeed:Double)
+
+/**
+ * 车辆轨迹数据样例类
+ * @param car  车牌号
+ * @param actionTime  操作时间
+ * @param monitorId  卡口Id
+ * @param roadId  roadId
+ * @param areaId  areaId
+ * @param speed  车速
+ */
+case class TrackInfo(car:String,actionTime:Long,monitorId:String,roadId:String,areaId:String,speed:Double)
+
+/**
+ * 违法车辆信息对象
+ * @param car  车牌号
+ * @param msg  提示信息
+ * @param createTime  时间
+ */
+case class ViolationInfo(car:String,msg:String,createTime:Long)
+
+/**
  * @description: TODO.
  * @author: zhaotf
  * @create: 2020-07-05 19:38
